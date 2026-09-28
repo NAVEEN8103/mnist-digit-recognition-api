@@ -1,290 +1,354 @@
-MNIST Digit Recognition API
+# 🧠 MNIST Digit Recognition API
 
-An end-to-end handwritten digit recognition system built with TensorFlow/Keras, FastAPI, Streamlit, and Docker.
+### End-to-end handwritten digit recognition with TensorFlow, FastAPI, Streamlit & Docker
 
-The project trains a Convolutional Neural Network (CNN) on the MNIST dataset, exposes the trained model through a REST API, and provides a Streamlit web interface where users can either draw a digit or upload an image for prediction.
+[![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange?logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-API-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-Frontend-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Tests](https://img.shields.io/badge/Tests-5%20passed-success)](#testing)
 
-🚀 Features
-🧠 CNN-based MNIST digit classification
-🎯 99.13% test accuracy
-⚡ FastAPI REST API for model inference
-🎨 Streamlit interactive frontend
-✍️ Draw digits directly using the mouse
-📤 Upload handwritten digit images
-🖼️ Image preprocessing and normalization
-📊 Prediction confidence
-❤️ Health-check endpoint
-ℹ️ Model information endpoint
-🧪 Automated API tests with Pytest
-🐳 Dockerized backend
-🐳 Docker Compose for full-stack deployment
-🏗️ Architecture
-                    ┌──────────────────────┐
-                    │       User           │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Streamlit Frontend   │
-                    │      Port 8501       │
-                    └──────────┬───────────┘
-                               │
-                               │ HTTP Request
-                               ▼
-                    ┌──────────────────────┐
-                    │    FastAPI Backend   │
-                    │      Port 8000       │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Image Preprocessing  │
-                    │ • Grayscale          │
-                    │ • Crop & Resize      │
-                    │ • Centering          │
-                    │ • Normalization      │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │     MNIST CNN        │
-                    │   TensorFlow/Keras   │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Digit + Confidence   │
-                    └──────────────────────┘
-🧠 Machine Learning Model
+A complete machine learning application that recognizes handwritten digits using a CNN trained on **MNIST**.
 
-The model is a Convolutional Neural Network trained on the MNIST handwritten digit dataset.
+Users can **draw a digit or upload an image**, while the trained model performs preprocessing and inference through a **FastAPI REST API**. The entire application can also be run using **Docker Compose**.
 
-Model Architecture
+---
+
+## ✨ Demo
+
+### Draw a digit
+
+Users can draw a handwritten digit directly in the Streamlit interface.
+
+### Upload an image
+
+Users can also upload an image containing a handwritten digit.
+
+### Prediction
+
+The application returns:
+
+```text
+Predicted Digit: 9
+Confidence: 99.13%
+```
+
+> 📸 **Screenshots**
+
+Add your actual screenshots here:
+
+```text
+docs/
+├── streamlit-home.png
+├── prediction.png
+└── swagger-api.png
+```
+
+Then use:
+
+```markdown
+![Streamlit Interface](docs/streamlit-home.png)
+
+![Prediction Result](docs/prediction.png)
+
+![FastAPI Swagger](docs/swagger-api.png)
+```
+
+---
+
+# 🏗️ Architecture
+
+```text
+                    ┌──────────────────┐
+                    │      User        │
+                    └────────┬─────────┘
+                             │
+                             ▼
+                  ┌─────────────────────┐
+                  │ Streamlit Frontend  │
+                  │      :8501          │
+                  └──────────┬──────────┘
+                             │
+                             │ HTTP
+                             ▼
+                  ┌─────────────────────┐
+                  │    FastAPI API      │
+                  │      :8000          │
+                  └──────────┬──────────┘
+                             │
+                             ▼
+                  ┌─────────────────────┐
+                  │ Image Preprocessing │
+                  │                     │
+                  │ • Grayscale         │
+                  │ • Crop              │
+                  │ • Resize            │
+                  │ • Center            │
+                  │ • Normalize         │
+                  └──────────┬──────────┘
+                             │
+                             ▼
+                  ┌─────────────────────┐
+                  │      CNN Model      │
+                  │   TensorFlow/Keras  │
+                  └──────────┬──────────┘
+                             │
+                             ▼
+                  ┌─────────────────────┐
+                  │ Prediction +        │
+                  │ Confidence          │
+                  └─────────────────────┘
+```
+
+---
+
+# 🧠 Model
+
+The classifier is a convolutional neural network trained on the **MNIST handwritten digit dataset**.
+
+### Architecture
+
+```text
 Input: 28 × 28 × 1
-
-        ↓
-
-Conv2D
-32 filters
-3 × 3 kernel
-ReLU
-
-        ↓
-
-MaxPooling2D
-2 × 2
-
-        ↓
-
-Conv2D
-32 filters
-3 × 3 kernel
-ReLU
-
-        ↓
-
-MaxPooling2D
-2 × 2
-
-        ↓
-
+        │
+        ▼
+Conv2D — 32 filters — 3×3 — ReLU
+        │
+        ▼
+MaxPooling — 2×2
+        │
+        ▼
+Conv2D — 32 filters — 3×3 — ReLU
+        │
+        ▼
+MaxPooling — 2×2
+        │
+        ▼
 Flatten
+        │
+        ▼
+Dense — 128 — ReLU
+        │
+        ▼
+Dense — 10 — Softmax
+        │
+        ▼
+Digit 0–9
+```
 
-        ↓
+### Performance
 
-Dense
-128 neurons
-ReLU
+| Metric | Result |
+|---|---:|
+| Training samples | 55,000 |
+| Validation samples | 5,000 |
+| Test samples | 10,000 |
+| Parameters | 113,386 |
+| Test Accuracy | **99.13%** |
 
-        ↓
+The trained model is saved as:
 
-Dense
-10 neurons
-Softmax
-
-        ↓
-
-Digit Prediction
-Model Statistics
-Metric	Value
-Training samples	55,000
-Validation samples	5,000
-Test samples	10,000
-Input size	28 × 28 × 1
-Output classes	10
-Total parameters	113,386
-Test accuracy	99.13%
-
-The trained model is stored at:
-
+```text
 Model/mnist_cnn.keras
-📊 Model Performance
+```
 
-The CNN achieved:
+---
 
-99.13% test accuracy
+# 🔧 Image Preprocessing
 
-Classification performance:
+Real handwritten images don't always have the same positioning as MNIST images.
 
-Digit	Precision	Recall	F1-score
-0	0.9899	0.9969	0.9934
-1	0.9965	0.9912	0.9938
-2	0.9971	0.9922	0.9947
-3	0.9950	0.9901	0.9926
-4	0.9939	0.9908	0.9924
-5	0.9866	0.9899	0.9882
-6	0.9896	0.9916	0.9906
-7	0.9865	0.9951	0.9908
-8	0.9897	0.9867	0.9882
-9	0.9871	0.9881	0.9876
-🔧 Image Preprocessing
+The API therefore performs preprocessing before inference:
 
-Uploaded or drawn images are processed before being passed to the CNN.
+```text
+Input Image
+     ↓
+Grayscale
+     ↓
+Background Detection
+     ↓
+Digit Extraction
+     ↓
+Bounding Box
+     ↓
+Crop + Margin
+     ↓
+Resize
+     ↓
+Center Digit
+     ↓
+Normalize
+     ↓
+28 × 28 × 1
+     ↓
+CNN
+```
 
-The preprocessing pipeline includes:
+This allows the model to work with both **uploaded images and digits drawn in the frontend**.
 
-Convert image to grayscale
-Detect the background
-Convert to MNIST-style white digit on black background
-Remove weak background pixels
-Detect the digit bounding box
-Crop the digit
-Add a margin around the digit
-Resize while maintaining the aspect ratio
-Center the digit in a 28 × 28 image
-Center using the digit's center of mass
-Normalize pixel values
-Reshape into the model's expected input shape
+---
 
-Final model input:
+# ⚡ REST API
 
-(1, 28, 28, 1)
-⚡ FastAPI Backend
+The FastAPI backend exposes three main information endpoints and one prediction endpoint.
 
-The backend provides REST API endpoints for interacting with the trained model.
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/` | API information |
+| `GET` | `/health` | Health check |
+| `GET` | `/model-info` | Model information |
+| `POST` | `/predict` | Predict handwritten digit |
 
-Base URL
+### Example prediction
 
-When running locally:
+**Request**
 
-http://127.0.0.1:8001
-Available Endpoints
-GET /
-
-Basic API information.
-
-GET /health
-
-Checks whether the API and model are available.
-
-Example:
-
-{
-  "status": "healthy"
-}
-GET /model-info
-
-Returns information about the trained model.
-
-Example:
-
-{
-  "model_name": "MNIST CNN",
-  "framework": "TensorFlow / Keras",
-  "input_shape": [28, 28, 1],
-  "num_classes": 10,
-  "total_parameters": 113386,
-  "test_accuracy": 0.9913
-}
+```http
 POST /predict
+```
 
-Accepts an image and returns the predicted digit and confidence.
+**Response**
 
-Example response:
-
+```json
 {
   "prediction": 9,
   "confidence": 99.13,
   "filename": "digit.png"
 }
+```
 
-Interactive API documentation is available through FastAPI's Swagger UI:
+Interactive API documentation:
 
+```text
 http://127.0.0.1:8001/docs
-🎨 Streamlit Frontend
+```
 
-The Streamlit application provides two ways to submit a digit:
+---
 
-1. Draw a Digit
+# 🎨 Frontend
 
-Users can draw a handwritten digit directly on the canvas using their mouse.
+The Streamlit frontend provides two input methods:
 
-2. Upload an Image
+### ✍️ Draw
 
-Users can upload an image containing a handwritten digit.
+Draw a digit directly on the canvas using your mouse.
 
-The frontend sends the image to the FastAPI backend and displays the model's prediction and confidence.
+### 📤 Upload
 
-When running locally:
+Upload an image containing a handwritten digit.
 
-http://127.0.0.1:8501
-🧪 Testing
+The frontend sends the image to the FastAPI backend and displays the prediction and confidence.
 
-The project includes automated API tests using Pytest.
+---
 
-Tests cover:
+# 🧪 Testing
 
-Root endpoint
-Health endpoint
-Model information endpoint
-Prediction endpoint
-Invalid file handling
+The API includes automated tests using **Pytest**.
 
-Run the tests with:
+Current test suite:
 
-python -m pytest -v
-
-Current test result:
+```text
+✓ Root endpoint
+✓ Health endpoint
+✓ Model information
+✓ Prediction endpoint
+✓ Invalid file handling
 
 5 passed
-🐳 Docker
+```
 
-The backend is containerized using Docker.
+Run:
 
-Build the API image
-docker build -t mnist-digit-api .
-Run the API
-docker run -d --name mnist-api -p 8001:8000 mnist-digit-api
+```bash
+python -m pytest -v
+```
 
-The API will then be available at:
+---
 
-http://127.0.0.1:8001
-🐳 Docker Compose
+# 🐳 Run with Docker
 
-The complete application can be started using Docker Compose.
+The application is fully containerized.
 
-The Compose configuration runs:
+### Start everything
 
-Frontend → Streamlit
-Backend  → FastAPI
-
-Start the application:
-
+```bash
 docker compose up --build
+```
 
-The services are exposed as:
+### Open the application
 
-Frontend: http://127.0.0.1:8501
-API:      http://127.0.0.1:8001
+**Frontend**
 
-Stop the services:
+```text
+http://127.0.0.1:8501
+```
 
+**FastAPI**
+
+```text
+http://127.0.0.1:8001
+```
+
+**Swagger API**
+
+```text
+http://127.0.0.1:8001/docs
+```
+
+### Stop containers
+
+```bash
 docker compose down
-📁 Project Structure
+```
+
+---
+
+# 💻 Run Locally
+
+### 1. Clone
+
+```bash
+git clone https://github.com/NAVEEN8103/mnist-digit-recognition-api.git
+
+cd mnist-digit-recognition-api
+```
+
+### 2. Create virtual environment
+
+Windows:
+
+```powershell
+python -m venv venv
+venv\Scripts\activate
+```
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Start FastAPI
+
+```bash
+uvicorn api.main:app --reload
+```
+
+### 5. Start Streamlit
+
+Open another terminal:
+
+```bash
+streamlit run frontend/app.py
+```
+
+---
+
+# 📁 Project Structure
+
+```text
 mnist-digit-recognition-api/
-│
-├── .streamlit/
-│   └── config.toml
 │
 ├── api/
 │   ├── __init__.py
@@ -306,102 +370,80 @@ mnist-digit-recognition-api/
 ├── tests/
 │   └── test_api.py
 │
+├── .streamlit/
+│   └── config.toml
+│
 ├── Dockerfile
 ├── docker-compose.yml
 ├── .dockerignore
 ├── .gitignore
 ├── requirements.txt
 └── README.md
-⚙️ Local Setup
-1. Clone the repository
-git clone https://github.com/NAVEEN8103/mnist-digit-recognition-api.git
-cd mnist-digit-recognition-api
-2. Create a virtual environment
+```
 
-Windows:
+---
 
-python -m venv venv
+# 🛠️ Tech Stack
 
-Activate it:
+| Category | Technology |
+|---|---|
+| Language | Python |
+| ML | TensorFlow / Keras |
+| Model | CNN |
+| Dataset | MNIST |
+| API | FastAPI |
+| Server | Uvicorn |
+| Frontend | Streamlit |
+| Image Processing | Pillow / NumPy |
+| Testing | Pytest |
+| Containerization | Docker |
+| Orchestration | Docker Compose |
 
-venv\Scripts\activate
-3. Install dependencies
-pip install -r requirements.txt
-4. Start FastAPI
-uvicorn api.main:app --reload --port 8000
+---
 
-The API will be available at:
+# 📈 What This Project Demonstrates
 
-http://127.0.0.1:8000
-5. Start Streamlit
+This project covers the complete path from a trained ML model to a usable application:
 
-In another terminal:
-
-streamlit run frontend/app.py
-
-The frontend will be available at:
-
-http://127.0.0.1:8501
-🛠️ Technologies Used
+```text
 Machine Learning
-Python
-TensorFlow
-Keras
-NumPy
-Pillow
-Backend
-FastAPI
-Uvicorn
-Python Multipart
-Frontend
-Streamlit
-Streamlit Drawable Canvas
-Testing
-Pytest
-HTTPX
-Deployment
-Docker
-Docker Compose
-🔮 Future Improvements
-
-Possible future improvements include:
-
-Deploying the application to a cloud platform
-Adding model versioning
-Adding request logging and monitoring
-Adding batch prediction support
-Improving handwritten digit robustness for non-MNIST-style images
-Adding CI/CD with GitHub Actions
-Adding API authentication
-Adding prediction history
-Adding a production-grade frontend
-Adding model performance monitoring
-👨‍💻 Project Goal
-
-This project demonstrates an end-to-end machine learning deployment workflow:
-
-Dataset
-   ↓
-Model Training
-   ↓
+      ↓
 Model Evaluation
-   ↓
+      ↓
 Model Serialization
-   ↓
+      ↓
 Image Preprocessing
-   ↓
-FastAPI Inference API
-   ↓
-Streamlit Interface
-   ↓
+      ↓
+REST API
+      ↓
+Interactive UI
+      ↓
 Automated Testing
-   ↓
+      ↓
 Docker
-   ↓
+      ↓
 Docker Compose
+```
 
-It combines machine learning, backend API development, frontend development, testing, and containerization into a single deployable application.
+It demonstrates practical experience across **ML engineering, API development, frontend integration, testing, and containerization**.
 
-📌 License
+---
 
-This project is intended for educational and portfolio purposes.
+# 🔮 Future Improvements
+
+- Cloud deployment
+- CI/CD with GitHub Actions
+- Model versioning
+- API authentication
+- Prediction history
+- Monitoring and logging
+- Batch prediction
+- Improved robustness for non-MNIST handwriting
+
+---
+
+## 👨‍💻 Author
+
+**Naveen Tiwari**
+
+Built as an end-to-end machine learning engineering project.
