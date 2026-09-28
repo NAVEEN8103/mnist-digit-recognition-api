@@ -1,0 +1,40 @@
+# Virtual environments
+venv/
+frontend_venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest
+.pytest_cache/
+
+# Type checking / tooling
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Git
+.git/
+.github/
+
+# Training / notebooks
+Training/
+
+# Streamlit
+.streamlit/
+
+# Docker
+*.log
+
+# Environment / secrets
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db

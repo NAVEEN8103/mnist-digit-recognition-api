@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import io
+import os
 import numpy as np
 
 from PIL import Image
@@ -23,7 +24,7 @@ st.set_page_config(
 # API CONFIG
 # ============================================================
 
-API_URL = "http://127.0.0.1:8000"
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8001")
 
 
 # ============================================================
